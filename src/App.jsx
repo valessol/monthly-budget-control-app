@@ -4,15 +4,16 @@ import ListadoGastos from "./components/ListadoGastos";
 import Modal from "./components/Modal";
 import { getFromLocalStorage, getId, saveInLocalStorage } from "./helpers";
 import IconoNuevoGasto from "./img/nuevo-gasto.svg";
-import { PRESUPUESTO } from "./constants/presupuesto";
+import { GASTOS, PRESUPUESTO } from "./constants/presupuesto";
 
 const presupuestoInicial = Number(getFromLocalStorage(PRESUPUESTO)) || 0;
+const gastosIniciales = getFromLocalStorage(GASTOS) || [];
 
 function App() {
   const [presupuesto, setPresupuesto] = useState(presupuestoInicial);
   const [isValidPresupuesto, setIsValidPresupuesto] = useState(false);
   const [modal, setModal] = useState(false);
-  const [gastos, setGastos] = useState([]);
+  const [gastos, setGastos] = useState(gastosIniciales);
   const [gastoEditar, setGastoEditar] = useState({});
 
   useEffect(() => {
@@ -26,6 +27,10 @@ function App() {
   }, [presupuesto]);
 
   useEffect(() => {
+    saveInLocalStorage(GASTOS, gastos);
+  }, [gastos]);
+
+  useEffect(() => {
     if (presupuesto) setIsValidPresupuesto(true);
   }, []);
 
@@ -33,7 +38,7 @@ function App() {
     setModal(true);
     setGastoEditar({});
   };
-
+  console.log(gastos, gastosIniciales);
   const guardarGasto = (gasto) => {
     const esNuevoGasto = !gasto.id;
 

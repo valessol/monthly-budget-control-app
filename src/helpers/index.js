@@ -16,9 +16,9 @@ export const formattDate = (date) => {
 };
 
 export const saveInLocalStorage = (key, value) => {
-  localStorage.setItem(key, value);
+  localStorage.setItem(key, JSON.stringify(value));
 };
 
 export const getFromLocalStorage = (key) => {
-  return localStorage.getItem(key);
+  return JSON.parse(localStorage.getItem(key));
 };
