@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import ListadoGastos from "./components/ListadoGastos";
 import Modal from "./components/Modal";
-import { getId } from "./helpers";
+import { getFromLocalStorage, getId, saveInLocalStorage } from "./helpers";
 import IconoNuevoGasto from "./img/nuevo-gasto.svg";
+import { PRESUPUESTO } from "./constants/presupuesto";
+
+const presupuestoInicial = Number(getFromLocalStorage(PRESUPUESTO)) || 0;
 
 function App() {
-  const [presupuesto, setPresupuesto] = useState(0);
+  const [presupuesto, setPresupuesto] = useState(presupuestoInicial);
   const [isValidPresupuesto, setIsValidPresupuesto] = useState(false);
   const [modal, setModal] = useState(false);
   const [gastos, setGastos] = useState([]);
@@ -17,6 +20,14 @@ function App() {
       setModal(true);
     }
   }, [gastoEditar]);
+
+  useEffect(() => {
+    saveInLocalStorage(PRESUPUESTO, presupuesto);
+  }, [presupuesto]);
+
+  useEffect(() => {
+    if (presupuesto) setIsValidPresupuesto(true);
+  }, []);
 
   const handleAddNuevoGasto = () => {
     setModal(true);

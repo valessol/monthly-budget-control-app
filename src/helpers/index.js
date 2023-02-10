@@ -14,3 +14,11 @@ export const formattDate = (date) => {
 
   return newDate.toLocaleDateString("es-ES", options);
 };
+
+export const saveInLocalStorage = (key, value) => {
+  localStorage.setItem(key, value);
+};
+
+export const getFromLocalStorage = (key) => {
+  return localStorage.getItem(key);
+};
