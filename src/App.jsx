@@ -5,6 +5,7 @@ import Modal from "./components/Modal";
 import { getFromLocalStorage, getId, saveInLocalStorage } from "./helpers";
 import IconoNuevoGasto from "./img/nuevo-gasto.svg";
 import { GASTOS, PRESUPUESTO } from "./constants/presupuesto";
+import Filtros from "./components/Filtros";
 
 const presupuestoInicial = Number(getFromLocalStorage(PRESUPUESTO)) || 0;
 const gastosIniciales = getFromLocalStorage(GASTOS) || [];
@@ -13,8 +14,15 @@ function App() {
   const [presupuesto, setPresupuesto] = useState(presupuestoInicial);
   const [isValidPresupuesto, setIsValidPresupuesto] = useState(false);
   const [modal, setModal] = useState(false);
+  const [filter, setFilter] = useState("");
+  const [data, setData] = useState([]);
   const [gastos, setGastos] = useState(gastosIniciales);
   const [gastoEditar, setGastoEditar] = useState({});
+
+  useEffect(() => {
+    if (presupuesto) setIsValidPresupuesto(true);
+    setData(gastos);
+  }, []);
 
   useEffect(() => {
     if (Object.keys(gastoEditar).length) {
@@ -27,18 +35,27 @@ function App() {
   }, [presupuesto]);
 
   useEffect(() => {
+    // si se agrega un gasto y hay filtro, filtrar la data
+    handleFilterData(filter);
     saveInLocalStorage(GASTOS, gastos);
   }, [gastos]);
-
-  useEffect(() => {
-    if (presupuesto) setIsValidPresupuesto(true);
-  }, []);
 
   const handleAddNuevoGasto = () => {
     setModal(true);
     setGastoEditar({});
   };
-  console.log(gastos, gastosIniciales);
+
+  const handleFilterData = (filter) => {
+    setFilter(filter);
+
+    // resetear filtro
+    if (!filter.length) return setData(gastos);
+
+    // filtrar los gastos
+    const filteredData = gastos.filter((gasto) => gasto.categoria === filter);
+    setData(filteredData);
+  };
+
   const guardarGasto = (gasto) => {
     const esNuevoGasto = !gasto.id;
 
@@ -71,9 +88,10 @@ function App() {
         setIsValidPresupuesto={setIsValidPresupuesto}
       />
       {isValidPresupuesto ? (
-        <>
+        <main>
+          <Filtros filter={filter} onChange={handleFilterData} />
           <ListadoGastos
-            gastos={gastos}
+            gastos={data}
             setGastoEditar={setGastoEditar}
             eliminarGasto={eliminarGasto}
           />
@@ -84,7 +102,7 @@ function App() {
               onClick={handleAddNuevoGasto}
             />
           </div>
-        </>
+        </main>
       ) : null}
       {modal && (
         <Modal
