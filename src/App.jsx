@@ -56,6 +56,12 @@ function App() {
     setData(filteredData);
   };
 
+  const handleResetApp = () => {
+    setGastos([]);
+    setPresupuesto(0);
+    setIsValidPresupuesto(false);
+  };
+
   const guardarGasto = (gasto) => {
     const esNuevoGasto = !gasto.id;
 
@@ -86,6 +92,7 @@ function App() {
         setPresupuesto={setPresupuesto}
         isValidPresupuesto={isValidPresupuesto}
         setIsValidPresupuesto={setIsValidPresupuesto}
+        onReset={handleResetApp}
       />
       {isValidPresupuesto ? (
         <main>
